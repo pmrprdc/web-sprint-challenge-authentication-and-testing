@@ -2,12 +2,17 @@ const request = require('supertest');
 const server = require('../api/server'); // Adjust the path according to your project structure
 const db = require('../data/dbConfig'); // Adjust the path for your database configuration
 
+
+beforeEach(async( )=> {
+   await db.seed.run();
+})
+
+
 // Helper function to register and login for getting the token
 async function authenticate() {
   await request(server)
     .post('/api/auth/register')
     .send({ username: 'testuser', password: 'password123' });
-
   const response = await request(server)
     .post('/api/auth/login')
     .send({ username: 'testuser', password: 'password123' });
@@ -15,10 +20,7 @@ async function authenticate() {
   return response.body.token;
 }
 
-beforeEach(async () => {
-  // Reset the database before each test
-  await db('users').truncate(); // Adjust according to your database setup
-});
+
 
 describe('Authentication and Jokes Endpoints', () => {
   // Tests for /api/auth/register

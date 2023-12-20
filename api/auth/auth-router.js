@@ -14,28 +14,30 @@ function generateToken(user) {
 }
 
 router.post('/register', async (req, res) => {
+  
   const { username, password } = req.body;
+
   if (!username || !password) {
     return res.status(400).json({ message: "username and password required" });
   }
-
   try {
-    const userExists = await Users.findBy({ username }).first();
+    const userExists = await Users.findBy({ username });
     if (userExists) {
       return res.status(400).json({ message: "username taken" });
     }
 
-    const hash = bcrypt.hashSync(password, 8); // 2^8 rounds of hashing
+    const hash = bcrypt.hashSync(password, 8); 
+    console.log(hash)// 2^8 rounds of hashing
     const newUser = await Users.add({ username, password: hash });
-
-    res.status(201).json({message: "New User created"});
+   
+    res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json({ message: "Error registering new user" });
   }
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password, token } = req.body;
+  const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ message: "username and password required" });
   }
@@ -43,10 +45,10 @@ router.post('/login', async (req, res) => {
   try {
     console.log("test")
     const user = await Users.findBy({ username }).first();
-    console.log(user)
+    console.log(user.username, user.password)
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
-      res.status(200).json({message: `welcome, ${user.username}`, token });
+      res.status(200).json({status: 200, message: `welcome, ${user.username}`, token });
     } else {
       res.status(401).json({ message: "invalid credentials" });
     }
