@@ -22,29 +22,31 @@ router.post('/register', async (req, res) => {
   try {
     const userExists = await Users.findBy({ username }).first();
     if (userExists) {
-      return res.status(409).json({ message: "username taken" });
+      return res.status(400).json({ message: "username taken" });
     }
 
     const hash = bcrypt.hashSync(password, 8); // 2^8 rounds of hashing
     const newUser = await Users.add({ username, password: hash });
 
-    res.status(201).json(newUser);
+    res.status(201).json({message: "New User created"});
   } catch (err) {
     res.status(500).json({ message: "Error registering new user" });
   }
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, token } = req.body;
   if (!username || !password) {
     return res.status(400).json({ message: "username and password required" });
   }
 
   try {
+    console.log("test")
     const user = await Users.findBy({ username }).first();
+    console.log(user)
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
-      res.status(200).json({ message: `welcome, ${user.username}`, token });
+      res.status(200).json({message: `welcome, ${user.username}`, token });
     } else {
       res.status(401).json({ message: "invalid credentials" });
     }
