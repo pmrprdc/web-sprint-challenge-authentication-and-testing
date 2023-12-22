@@ -26,12 +26,9 @@ router.post('/register', async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: "username taken" });
     }
-
     const hash = bcrypt.hashSync(password, 8); 
-    console.log(hash)// 2^8 rounds of hashing
     const newUser = await Users.add({ username, password: hash });
-    console.log(newUser)
-   
+
     res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json({ message: "Error registering new user" });
@@ -43,13 +40,11 @@ router.post('/login', async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ message: "username and password required" });
   }
-
   try {
     const user = await Users.findBy({ username })
-   if (user && bcrypt.compareSync(password, user.password)) {
-      console.log(password,user.password)
+    if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
-      res.status(200).json({status: 200, message: `welcome, ${user.username}`, token });
+      res.json({status: 200, message: `welcome, ${user.username}`, token });
     } else {
       res.status(401).json({ message: "invalid credentials" });
     }
