@@ -1,5 +1,4 @@
-const db = require('../../data/dbConfig'); // Adjust the path to where your db-config is
-
+const db = require('../../data/dbConfig')
 // Helper function to find a user by a filter (e.g., username)
 async function findBy(filter) {
   const users = await db('users').where(filter).first();

@@ -21,6 +21,7 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: "username and password required" });
   }
   try {
+  
     const userExists = await Users.findBy({ username });
     if (userExists) {
       return res.status(400).json({ message: "username taken" });
@@ -29,6 +30,7 @@ router.post('/register', async (req, res) => {
     const hash = bcrypt.hashSync(password, 8); 
     console.log(hash)// 2^8 rounds of hashing
     const newUser = await Users.add({ username, password: hash });
+    console.log(newUser)
    
     res.status(201).json(newUser);
   } catch (err) {
@@ -43,9 +45,7 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    console.log("test")
-    const user = await Users.findBy({ username }).first();
-    console.log(user.username, user.password)
+    const user = await Users.findBy({ username })
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
       res.status(200).json({status: 200, message: `welcome, ${user.username}`, token });

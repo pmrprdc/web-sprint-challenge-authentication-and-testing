@@ -3,7 +3,7 @@ const server = require('../api/server'); // Adjust the path according to your pr
 const db = require('../data/dbConfig'); // Adjust the path for your database configuration
 
 
-beforeEach(async( )=> {
+beforeEach(async()=> {
    await db.seed.run();
 })
 
