@@ -8,7 +8,7 @@
     "rollback": "cross-env NODE_ENV=testing knex migrate:rollback",
     "resetDb": "npm run rollback && npm run migrate && npm run seed",
     "test": "cross-env NODE_ENV=testing jest --verbose --runInBand --watchAll",
-    "echo-env": "cross-env NODE_ENV=testing echo $NODE_ENV"
+      "echo-env": "cross-env NODE_ENV=testing echo $NODE_ENV"
 
   },
   "repository": {

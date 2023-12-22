@@ -3,9 +3,14 @@ const server = require('../api/server'); // Adjust the path according to your pr
 const db = require('../data/dbConfig'); // Adjust the path for your database configuration
 
 
-beforeEach(async()=> {
-   await db.seed.run();
-})
+beforeEach(async () => {
+  await db.migrate.rollback();
+  await db.migrate.latest();
+});
+
+test('environment is testing',() =>{
+expect(process.env.NODE_ENV).toBe('testing')})
+
 
 
 // Helper function to register and login for getting the token
@@ -53,11 +58,11 @@ describe('Authentication and Jokes Endpoints', () => {
       await request(server)
         .post('/api/auth/register')
         .send({ username: 'loginuser', password: 'password123' });
-
+  
       const res = await request(server)
         .post('/api/auth/login')
         .send({ username: 'loginuser', password: 'password123' });
-
+      console.log(`response = ${res.body}`)
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('token');
     });
