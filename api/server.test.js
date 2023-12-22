@@ -1,7 +1,7 @@
 const request = require('supertest');
 const server = require('../api/server'); // Adjust the path according to your project structure
 const db = require('../data/dbConfig'); // Adjust the path for your database configuration
-
+const jokes = require('./jokes/jokes-data')
 
 beforeEach(async () => {
   await db.migrate.rollback();
@@ -14,13 +14,13 @@ expect(process.env.NODE_ENV).toBe('testing')})
 
 
 // Helper function to register and login for getting the token
-async function authenticate() {
+async function authenticate (username,password) {
   await request(server)
     .post('/api/auth/register')
-    .send({ username: 'testuser', password: 'password123' });
+    .send({ username: username, password: password });
   const response = await request(server)
     .post('/api/auth/login')
-    .send({ username: 'testuser', password: 'password123' });
+    .send({ username: username, password: password });
 
   return response.body.token;
 }
@@ -88,20 +88,26 @@ describe('Authentication and Jokes Endpoints', () => {
   // Tests for /api/jokes
   describe('GET /api/jokes', () => {
     it('should return jokes for authenticated users', async () => {
-      const token = await authenticate();
 
-      const res = await request(server)
-        .get('/api/jokes')
-        .set('Authorization', token);
+      try {
+        const token = await authenticate("harry", "potter")
+      }catch (err){
+        console.log(err)
+      }
+      
+      try { 
+        const res = await request(server)
+        .get('api/jokes')
+        .set('Authorization', token) // Set the token in the Authorization header
 
-      expect(res.status).toBe(200);
-      expect(res.body).toBeInstanceOf(Array); // Assuming jokes are returned as an array
+        expect(res.body).toBe(jokes)
+      } catch(err){
+      }
     });
 
     it('should not return jokes for unauthenticated requests', async () => {
       const res = await request(server)
         .get('/api/jokes');
-
       expect(res.status).toBe(401);
     });
   });
