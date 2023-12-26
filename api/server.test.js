@@ -108,6 +108,7 @@ describe('Authentication and Jokes Endpoints', () => {
     it('should not return jokes for unauthenticated requests', async () => {
       const res = await request(server)
         .get('/api/jokes');
+
       expect(res.status).toBe(401);
     });
   });
