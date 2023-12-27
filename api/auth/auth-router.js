@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../auth/users-model'); // Adjust the path for your users model
-
+const secret = process.env.JWT_SECRET || "shh"
 // Helper function to generate token
 function generateToken(user) {
   const payload = {
@@ -10,7 +10,7 @@ function generateToken(user) {
     username: user.username
   };
   const options = { expiresIn: '1d' };
-  return jwt.sign(payload, process.env.JWT_SECRET, options);
+  return jwt.sign(payload, secret , options);
 }
 
 router.post('/register', async (req, res) => {
