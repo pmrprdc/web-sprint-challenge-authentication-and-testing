@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   const token = req.headers.authorization;
   // Check if the token is missing
   if (!token) {
-    return res.status(401).json({ message: "what? no token" });
+    return res.status(401).json({ message: "token required" });
   }else{
     jwt.verify(token,process.env.JWT_SECRET,(error,decoded)=>{
       if(error){
