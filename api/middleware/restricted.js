@@ -8,11 +8,13 @@ module.exports = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "token required" });
   }else{
-    jwt.verify(token,process.env.JWT_SECRET,(error,decoded)=>{
+    jwt.verify(token, process.env.JWT_SECRET ,(error,decoded)=>{
       if(error){
+        console.error("Token verification error:", error);
         res.status(401).json({message: "your token is invalid or expired"})
       }else {
         req.decodedjwt = decoded;
+        console.log(`jwt verify has worked on to resources${decoded}`)
         next();
       }
     } )
